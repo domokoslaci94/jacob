@@ -54,10 +54,10 @@ void Samu::FamilyCaregiverShell ( void )
   std::cout << Caregiver() << "@Caregiver> " << std::flush;
 
   int sleep {0};
-  
-  if(sleep_)
+
+  if ( sleep_ )
     sleep = sleep_after_ + 1;
-  
+
   for ( ; run_ ; )
     {
 
@@ -74,14 +74,14 @@ void Samu::FamilyCaregiverShell ( void )
         }
       else if ( s )
         {
-	  std::string line;
+          std::string line;
           std::getline ( std::cin,  line );
 
-	  if(sleep_)
-	    std::cout << "Isaac is awake now." << std::endl;
-	    
+          if ( sleep_ )
+            std::cout << "Isaac is awake now." << std::endl;
+
           sleep_ = false;
-	  sleep = 0;
+          sleep = 0;
 
           if ( !line.compare ( 0, cmd_prefix.length(), cmd_prefix ) )
             {
@@ -90,23 +90,23 @@ void Samu::FamilyCaregiverShell ( void )
             }
           else
             {
-              *this << line;
+              std::cerr << message ( -1, line ) << std::endl;
             }
 
         }
       else
         {
-	  if ( ++sleep > sleep_after_ )
-	  {
-	    if(!sleep_)
-	      std::cout << "Isaac went to sleep." << std::endl;
-            sleep_ = true;
-	  }
-	  else
-	  {
-	      std::cout << sleep << " " << std::flush;;	    
-	  }
-	    
+          if ( ++sleep > sleep_after_ )
+            {
+              if ( !sleep_ )
+                std::cout << "Isaac went to sleep." << std::endl;
+              sleep_ = true;
+            }
+          else
+            {
+              std::cout << sleep << " " << std::flush;;
+            }
+
         }
 
       //std::cout << Caregiver() << "@Caregiver> " << std::endl;

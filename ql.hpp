@@ -134,22 +134,22 @@ public:
     return 1.0/ ( 1.0 + exp ( -x ) );
   }
 
-  
+
   double operator() ( double image [] )
   {
-        
+
     units[0] = image;
 
     for ( int i {1}; i < n_layers; ++i )
       {
-	
+
 #ifdef CUDA_PRCPS
 
-	cuda_layer(i, n_units, units, weights);
-	
+        cuda_layer ( i, n_units, units, weights );
+
 #else
-	
-	#pragma omp parallel for
+
+        #pragma omp parallel for
         for ( int j = 0; j < n_units[i]; ++j )
           {
             units[i][j] = 0.0;
@@ -162,9 +162,9 @@ public:
             units[i][j] = sigmoid ( units[i][j] );
 
           }
-         
-#endif          
-          
+
+#endif
+
       }
 
     return sigmoid ( units[n_layers - 1][0] );
@@ -206,8 +206,8 @@ public:
 
     for ( int i {n_layers-2}; i >0 ; --i )
       {
-	
-	#pragma omp parallel for	
+
+        #pragma omp parallel for
         for ( int j =0; j < n_units[i]; ++j )
           {
 
@@ -411,12 +411,12 @@ public:
 
     if ( prcps.find ( triplet ) == prcps.end() )
       {
-#ifndef CHARACTER_CONSOLE		
+#ifndef CHARACTER_CONSOLE
         prcps[triplet] = new Perceptron ( 3, 256*256, 80, 1 );
         //prcps[triplet] = new Perceptron ( 3, 256*256, 400, 1 );
 #else
         prcps[triplet] = new Perceptron ( 3, 10*80, 32, 1 );
-#endif	
+#endif
       }
 
     SPOTriplet action = triplet;
@@ -427,6 +427,7 @@ public:
 
         double max_ap_q_sp_ap = max_ap_Q_sp_ap ( image );
 
+        double old_q_q_s_a_nn_q_s_a;
         for ( int z {0}; z<10; ++z )
           {
             double nn_q_s_a = ( *prcps[prev_action] ) ( prev_image );
@@ -444,6 +445,12 @@ public:
                       << " "
                       << nn_q_s_a
                       << std::endl;
+
+            if ( std::fabs ( old_q_q_s_a_nn_q_s_a - ( q_q_s_a - nn_q_s_a ) ) <= 0.00000001 )
+              break;
+
+            old_q_q_s_a_nn_q_s_a = q_q_s_a - nn_q_s_a;
+
           }
 
         action = argmax_ap_f ( prg, image );
@@ -453,11 +460,11 @@ public:
     prev_reward = reward;	// r <- r'
     prev_action = action;	// a <- a'
 
-#ifndef CHARACTER_CONSOLE		    
+#ifndef CHARACTER_CONSOLE
     std::memcpy ( prev_image, image, 256*256*sizeof ( double ) );
 #else
-    std::memcpy ( prev_image, image, 10*80*sizeof ( double ) );    
-#endif    
+    std::memcpy ( prev_image, image, 10*80*sizeof ( double ) );
+#endif
     return action;
   }
 
@@ -665,7 +672,7 @@ private:
 #ifdef Q_LOOKUP_TABLE
   double gamma = .2;
 #else
-  double gamma = .4;
+  double gamma = .2;
 #endif
 
 #ifdef Q_LOOKUP_TABLE
@@ -683,11 +690,11 @@ private:
   std::string prev_state;
 
   double prev_reward { -std::numeric_limits<double>::max() };
-#ifndef CHARACTER_CONSOLE		
+#ifndef CHARACTER_CONSOLE
   double prev_image [256*256];
 #else
-  double prev_image [10*80];  
-#endif  
+  double prev_image [10*80];
+#endif
 
 };
 

@@ -27,11 +27,11 @@
  *
  * @section DESCRIPTION
  * SAMU
- * 
- * The main purpose of this project is to allow the evaluation and 
- * verification of the results of the paper entitled "A disembodied 
- * developmental robotic agent called Samu Bátfai". It is our hope 
- * that Samu will be the ancestor of developmental robotics chatter 
+ *
+ * The main purpose of this project is to allow the evaluation and
+ * verification of the results of the paper entitled "A disembodied
+ * developmental robotic agent called Samu Bátfai". It is our hope
+ * that Samu will be the ancestor of developmental robotics chatter
  * bots that will be able to chat in natural language like humans do.
  *
  */
@@ -62,17 +62,17 @@ public:
     terminal_thread_.join();
   }
 
-  bool run ( void ) const 
+  bool run ( void ) const
   {
     return run_;
   }
 
-  bool halt ( void ) 
+  bool halt ( void )
   {
     run_ = false;
   }
-  
-  
+
+
   bool sleep ( void ) const
   {
     return sleep_;
@@ -82,9 +82,12 @@ public:
   {
     return sleep_after_;
   }
-  
-  void t(void) {vi.t();}
-    
+
+  void clear_vi ( void )
+  {
+    vi.clear();
+  }
+
   void FamilyCaregiverShell ( void );
   void terminal ( void )
   {
@@ -94,9 +97,36 @@ public:
     FamilyCaregiverShell();
   }
 
+  /*
   void operator<< ( std::string sentence )
   {
     vi << nlp.sentence2triplets ( sentence.c_str() );
+  }
+  */
+
+  std::string message ( int id, std::string sentence )
+  {
+    if ( msg_mutex.try_lock() )
+      {
+
+        if ( id != old_talk_id )
+          clear_vi();
+
+        old_talk_id = id;
+
+        vi << nlp.sentence2triplets ( sentence.c_str() );
+
+        msg_mutex.unlock();
+
+        return "";
+      }
+    else
+      {
+
+        return "Samu's attention diverted elsewhere.";
+
+      }
+
   }
 
   std::string Caregiver()
@@ -117,21 +147,21 @@ public:
     return vi.reward();
   }
 
-  void save(std::string & fname)
-  {    
-    vi.save(fname);
+  void save ( std::string & fname )
+  {
+    vi.save ( fname );
   }
 
-  void load(std::fstream & file)
-  {    
-    vi.load(file);
-  }  
-  
+  void load ( std::fstream & file )
+  {
+    vi.load ( file );
+  }
+
 private:
 
   bool run_ {true};
-  bool sleep_{true};
-  const int sleep_after_{30};
+  bool sleep_ {true};
+  int sleep_after_ {15};
   std::mutex mutex_;
   std::condition_variable cv_;
   std::thread terminal_thread_ {&Samu::terminal, this};
@@ -141,6 +171,10 @@ private:
 
   int caregiver_idx_ {0};
   std::vector<std::string> caregiver_name_ {"Norbi", "Nandi", "Matyi", "Greta"};
+
+  std::mutex msg_mutex;
+  int old_talk_id {0};
+
 };
 
 #endif

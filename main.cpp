@@ -119,32 +119,33 @@ int main ( int argc, char **argv )
       double sum {0.0};
       if ( samu.sleep() )
         {
-          for ( int i {0}; i<7; ++i )
+          samu.clear_vi();
+          for ( int i {0}; i<7 && samu.sleep(); ++i )
             {
-              samu << test[i];
+              std::cerr << samu.message(11, test[i]) << std::endl;
               sum += samu.reward();
 
             }
           std::cerr << "###### " << ++j << "-th iter " << sum << std::endl;
 
-/*
-          if ( j == 5 )
-            {
-              // samu.t();
+          /*
+                    if ( j == 5 )
+                      {
+                        // samu.t();
 
-              std::string samuImage {"samu.image.txt"};
+                        std::string samuImage {"samu.image.txt"};
 
-              std::fstream samuFile ( samuImage,  std::ios_base::in );
-              if ( samuFile )
-                samu.load ( samuFile );
+                        std::fstream samuFile ( samuImage,  std::ios_base::in );
+                        if ( samuFile )
+                          samu.load ( samuFile );
 
 
-            }
-*/
+                      }
+          */
 
         }
-        else
-	  sleep(1);
+      else
+        sleep ( 1 );
     }
 
   return 0;

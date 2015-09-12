@@ -76,15 +76,15 @@ public:
     boost::posix_time::ptime now = boost::posix_time::second_clock::universal_time();
     std::string image_file = "samu_vi_"+boost::posix_time::to_simple_string ( now ) +".png";
 
-#ifndef CHARACTER_CONSOLE    
+#ifndef CHARACTER_CONSOLE
     char * image_file_p = strdup ( image_file.c_str() );
     pngwriter image ( 256, 256, 65535, image_file_p );
     free ( image_file_p );
-#else    
+#else
     char console[10][80];
-    std::memset(console, ' ', 10*80);
+    std::memset ( console, ' ', 10*80 );
 #endif
-    
+
     char stmt_buffer[1024];
     char *stmt_buffer_p = stmt_buffer;
 
@@ -104,7 +104,7 @@ public:
 
         std::snprintf ( stmt_buffer, 1024, "%s.%s(%s);", triplet.s.c_str(), triplet.p.c_str(), triplet.o.c_str() );
 
-#ifndef CHARACTER_CONSOLE	
+#ifndef CHARACTER_CONSOLE
         char font[] = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf";
         char *font_p = font;
 
@@ -115,15 +115,15 @@ public:
                                0.0,
                                stmt_buffer_p, 0, 0, 0 );
 #else
-	
-	  std::strncpy(console[stmt_counter++], stmt_buffer, 80);
-	
+
+        std::strncpy ( console[stmt_counter++], stmt_buffer, 80 );
+
 #endif
-	
+
         run.pop();
       }
 
-#ifndef CHARACTER_CONSOLE      
+#ifndef CHARACTER_CONSOLE
     double *img_input = new double[256*256];
 
     for ( int i {0}; i<256; ++i )
@@ -137,11 +137,11 @@ public:
     for ( int i {0}; i<10; ++i )
       for ( int j {0}; j<80; ++j )
         {
-          img_input[i*80+j] = ((double)console[i][j]) / 255.0;
+          img_input[i*80+j] = ( ( double ) console[i][j] ) / 255.0;
         }
 #endif
-        
-        
+
+
 #else
     std::string prg;
     while ( !run.empty() )
@@ -166,14 +166,14 @@ public:
 
     std::cout << std::endl
               << "Jacob@AI"
-#ifdef QNN_DEBUG	      
+#ifdef QNN_DEBUG
               << "."
               << ql.get_action_count()
               << "."
               << ql.get_action_relevance()
               << "%"
-#endif	      
-	      <<"> "
+#endif
+              <<"> "
               << response << std::endl;
 
 #else
@@ -187,14 +187,14 @@ public:
                 std::chrono::high_resolution_clock::now() - start ).count()
               << " ms " <<  std::endl;
 
-#ifndef CHARACTER_CONSOLE	
+#ifndef CHARACTER_CONSOLE
 
 #ifndef Q_LOOKUP_TABLE
     delete[] img_input;
     image.close();
 #endif
 
-#endif    
+#endif
   }
 
   double reward ( void )
@@ -202,24 +202,24 @@ public:
     return ql.reward();
   }
 
-  void save(std::string &fname)
+  void save ( std::string &fname )
   {
-    ql.save(fname);
-  }  
-  
-  void load(std::fstream & file)
-  {    
-    ql.load(file);
-  }    
+    ql.save ( fname );
+  }
 
-  void t(void)
+  void load ( std::fstream & file )
+  {
+    ql.load ( file );
+  }
+
+  void clear ( void )
   {
     while ( !program.empty() )
       {
         program.pop();
       }
   }
-  
+
 private:
 
   QL ql;
