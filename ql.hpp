@@ -316,7 +316,7 @@ public:
   double f ( double u, int n )
   {
 #ifndef Q_LOOKUP_TABLE
-    const int N_e = 10;
+    const int N_e = 20;
 #else
     const int N_e = 10;
 #endif
