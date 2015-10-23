@@ -2,7 +2,7 @@
 "The son of Isaac is Jacob." The project called Jacob is an experiment to replace Isaac's (GUI based) visual imagination with a character console.
 It is our hope that Jacob (Isaac and Samu) will be the ancestor of developmental robotics chatter bots that will be able to chat in natural language like humans do.
 The main expectation of the project Jacob is to increase the speed of Samu's (and Isaac's) neural computation.
-If it can be achieved Jacob will be used as a storyteller robot too.
+If it can be achieved Jacob will be used as a storyteller robot too. See also the page [Family Robotics - Deep Q-learning with Samu](http://shrek.unideb.hu/~nbatfai/)
 
 ## Genealogy of Jacob
 
